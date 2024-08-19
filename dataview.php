@@ -1,4 +1,4 @@
-debug this {<?php
+<?php
 // Include the database connection file
 require('connection.php');
 session_start();
@@ -51,58 +51,109 @@ $home = '<li class="nav-item">
     <script src="https://cdn.datatables.net/2.1.3/js/dataTables.min.js"></script>
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" ></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
    
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
 
+        .container, .navbar, .form-group, fieldset {
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            background-color: #ffffff;
+            margin-bottom: 20px;
+            max-width: 1200px; /* Limit container width */
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .horizontal-form {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .horizontal-form .form-group {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .horizontal-form .form-submit {
+            flex: 0;
+            margin-left: auto;
+        }
+
+        .form-group input, .form-group select {
+            max-width: 200px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .horizontal-form {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .horizontal-form .form-group, .horizontal-form .form-submit {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        /* DataTable container styles */
+        .data-table-container {
+            overflow-x: auto;
+            overflow-y: auto;
+            max-height: 500px; /* Adjust as needed */
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        table.dataTable {
+            width: 100% !important; 
+        }
+    </style>
 </head>
 <body>
-        
-<nav class="navbar navbar-dark bg-dark fixed-top">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">Magnito Dynamics</a>
-    <span class="navbar-text ms-auto">
-        <?php
-        echo $_SESSION["username"];
-        ?>
-      </span>
-    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
+    <a class="navbar-brand" href="#">Magneto Dynamics</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
-      <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Magneto Dynamics</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-      </div>
-      <div class="offcanvas-body">
-        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-         
-         <?php
-         $action = $_SESSION['usertype'];
-         switch ($action) {
-             case '0':
-                 echo $home;
-                 echo $view;
-                 echo $logout;   
-                 echo $settings;
-                 echo $register;
-                 break;
-             case '1':
-                 echo $view;
-                 echo $logout;
-                 break;
-             case '2':
-                 echo $home;
-                 echo $view;
-                 echo $logout;
-                 break;
-           }    
-         ?>
-      </div>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#"></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#"></a>
+        </li>
+     
+   
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true"></a>
+        </li>
+      </ul>
+      <form action="./logout.php" class="d-flex">
+                <span class="navbar-text text-white me-3">
+                    <i class="fa-solid fa-user"></i> <?php echo $_SESSION['username']; ?>
+                </span>
+                    <button class="btn btn-outline-danger" type="submit">
+                     
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+</button>
+                </form>
     </div>
   </div>
-</nav><br><br>
+</nav>
 
 <div class="container mt-5">
-    <h2 class="mb-4">Data Table</h2>
+    <h2 class="mb-4">LED Message </h2>
     <table id="dataTable"  style="width:100%">
         <thead>
             <tr>
@@ -110,9 +161,9 @@ $home = '<li class="nav-item">
                 <th>Line</th>
                 <th>Message</th>
                 <th>Type</th>
-                <th>Created By</th>
-                <th>Edit</th>
-                <th>Remove</th>
+                 <th>Created By</th>
+            <!--    <th>Edit</th>
+                <th>Remove</th> -->
             </tr>
         </thead>
         <tbody>
@@ -151,14 +202,14 @@ $home = '<li class="nav-item">
                     $owner_row = mysqli_fetch_assoc($owner_result);
                     $owner_name = $owner_row ? $owner_row["username"] : "Unknown";
                     echo "<td>" . $owner_name . "</td>";
-                    if($_SESSION["usertype"] == 2 || $_SESSION["usertype"] == 0){
-                        echo "<td><a href='./editdata.php?id=" . $id . "' class='btn btn-primary'>Edit</a></td>";
-                        echo "<td><a href='./removedata.php?id=" . $id . "' class='btn btn-danger' onclick='return confirm(\"Are you sure you want to delete this record?\");'>Remove</a></td>";
-                    }
-                    else{
-                        echo '<td></td>
-        <td></td>';
-                    }
+        //             if($_SESSION["usertype"] == 2 || $_SESSION["usertype"] == 0){
+        //                 echo "<td><a href='./editdata.php?id=" . $id . "' class='btn btn-primary'>Edit</a></td>";
+        //                 echo "<td><a href='./removedata.php?id=" . $id . "' class='btn btn-danger' onclick='return confirm(\"Are you sure you want to delete this record?\");'>Remove</a></td>";
+        //             }
+        //             else{
+        //                 echo '<td></td>
+        // <td></td>';
+        //             }
                     echo "</tr>";
                 }
             }
@@ -213,6 +264,7 @@ $home = '<li class="nav-item">
     //         event.preventDefault();
     //     }
     // });
+    
     });
 </script>
     <!-- <script src="add.js"></script> -->

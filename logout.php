@@ -7,6 +7,6 @@ session_unset();
 session_destroy();
 
 // Redirect to the login page or homepage
-header("Location: index.php"); // or replace with your preferred page
+ echo "<script>alert(' Successfully logged out'); window.location.href='index.php';</script>"; // or replace with your preferred page
 exit;
 ?>

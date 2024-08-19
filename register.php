@@ -32,10 +32,10 @@ if (isset($_POST['submit'])) {
             $stmt->bind_param("sssi", $username, $email, $password, $usertype);
 
             if ($stmt->execute()) {
-              header("Location: index.php");
+                 echo "<script>alert(' Successfully regitered'); window.location.href='usersetting.php';</script>";
             
             } else {
-                echo "Error: " . $stmt->error;
+             echo "<script>alert(' Registration Unsucessful'); window.location.href='newuser.php';</script>" . $stmt->error;
             }
 
             // Close the statement

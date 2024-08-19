@@ -3,29 +3,27 @@
 require("connection.php");
 session_start();
 
-$login = ' <li class="nav-item">
+$login = '<li class="nav-item">
             <a class="nav-link" href="./index.php">Login</a>
           </li>';
-$logout = ' <li class="nav-item">
+$logout = '<li class="nav-item">
             <a class="nav-link" href="./logout.php">Logout</a>
           </li>';
 $settings = '<li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Setting
+              Settings
             </a>
             <ul class="dropdown-menu dropdown-menu-dark">
               <li><a class="dropdown-item" href="#">Static IP</a></li>
               <li><a class="dropdown-item" href="./usersetting.php">User Setting</a></li>';
 $register = '<li><a class="dropdown-item" href="./newuser.php">Register User</a></li>';    
-$view = ' <li class="nav-item">
+$view = '<li class="nav-item">
             <a class="nav-link" href="./dataview.php">View</a>
           </li>';
-$home = ' <li class="nav-item">
+$home = '<li class="nav-item">
             <a class="nav-link active" aria-current="page" href="./add.php">Add Page</a>
           </li>';         
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -33,104 +31,96 @@ $home = ' <li class="nav-item">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="./log.css">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <style>
+        /* General styles */
+        body {
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* Form container */
+        .d1 {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            max-width: 400px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Form elements */
+        .d1 p {
+            margin: 0 0 10px;
+            font-weight: bold;
+        }
+
+        .d1 input[type="text"],
+        .d1 input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .d1 input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .d1 input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .d1 {
+                padding: 15px;
+                margin: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
-           
-<nav class="navbar navbar-dark bg-dark fixed-top">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Magnito Dyanics</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
-      <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Magneto Dynamics  </h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-      </div>
-      <div class="offcanvas-body">
-        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-         
-          <?php
-          if(!isset($_SESSION["username"])) {
-              echo $login; 
-
-          }
-          else{
-            $action = $_SESSION['usertype'] ; // Get the action from the query string or default to an empty string
-       
-            switch ($action) {
-                case '0':
-                    // Code for admin actions
-                    echo $home;
-                    echo $view;
-                    echo $logout;   
-                    echo $settings;
-                    echo $register ;   
-                             
-                    break;
-                    
-                case '1':
-                    // Code to view a user
-                   echo $view;
-                   echo $logout;
-                    
-                    break;
-                    
-                case '2':
-                    // Code to edit a user
-                    echo $home;
-                    echo $view;
-                    echo $logout;
-                    break;
-                 
-                    
-             
-                }   
-
-          }
-           
-              ?>
-          
-                   
-         
-      
-        
-         
-
-             <!-- <li>
-                <hr class="dropdown-divider">
-              </li>
-              <li><a class="dropdown-item" href="#"></a></li> 
-            </ul>
-          </li>
-        </ul>
-        <form class="d-flex mt-3" role="search">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-success" type="submit">Search</button>
-        </form>
--->
-      </div>
-    </div>
-  </div>
-</nav>
-<div class = "d1">
-<center><h1>Login </h1></center>
-    <form action="./login.php" method="post">
-       <p>Username</p>
-        <input id="username" name="username" type="text">
-        <p>Password</p>
-        <input id="password" name="password" type="password">
-        <input type="submit" id = "btn" name ="submit" value="Login">
-
-    </form>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="https://www.magdyn.com/Products-Services/">Magneto Dynamics</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+               
+              
+            </div>
         </div>
+    </nav><br><br>
+
+    <div class="d1">
+        <fieldset>
+      <center>      <h1>Login</h1>  </center>
+            <form action="./login.php" method="post">
+                <p>Username</p>
+                <input id="username" name="username" type="text">
+                <p>Password</p>
+                <input id="password" name="password" type="password">
+                <input type="submit" id="btn" name="submit" value="Login">
+            </form>
+        </fieldset>
+    </div>
+
     <script src="./log.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" ></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
-
-
-

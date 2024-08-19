@@ -1,42 +1,40 @@
 <?php
-require('connection.php');
+require("connection.php");
+session_start();
 
-// Enable error reporting for debugging
-// ini_set('display_errors', 1);
-// ini_set('display_startup_errors', 1);
-// error_reporting(E_ALL);
-
-// Check if form was submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Sanitize the input
     $ip_address = $_POST['ip'];
+    $id = $_POST['id']; // Get the ID from the hidden input field
 
-    // Validate IP address
     if (filter_var($ip_address, FILTER_VALIDATE_IP)) {
-        // Prepare and bind
-        $stmt = $con->prepare("INSERT INTO staticip (ip) VALUES (?)");
-        
-        if ($stmt === false) {
-            die("Prepare failed: " . htmlspecialchars($con->error));
-        }
+        // Prepare the SQL statement to update the IP address for the given ID
+        $stmt = $con->prepare("UPDATE staticip SET ip = ? WHERE id = ?");
 
-        $stmt->bind_param("s", $ip_address);
+        if ($stmt) {
+            $stmt->bind_param("si", $ip_address, $id);
 
-        // Execute and check for errors
-        if ($stmt->execute()) {
-            echo "IP address saved successfully.";
-            header("Location: add.php");
+            if ($stmt->execute()) {
+                // Successful update
+                echo "<script>
+                        alert('IP updated successfully');
+                        window.location.href = 'add.php';
+                      </script>";
+            } else {
+                // Error during execution
+                echo "<script>alert('Error updating IP: " . htmlspecialchars($stmt->error) . "');</script>";
+            }
+
+            $stmt->close();
         } else {
-            echo "Error executing statement: " . htmlspecialchars($stmt->error);    
+            // Prepare statement failed
+            echo "<script>alert('Prepare failed: " . htmlspecialchars($con->error) . "');</script>";
         }
-
-        $stmt->close();
     } else {
-        echo "Invalid IP address format: " . htmlspecialchars($ip_address);
+        // Invalid IP format
+        echo "<script>alert('Invalid IP address format');</script>";
     }
-} else {
-    echo "No data received.";
 }
 
+// Close the database connection
 $con->close();
 ?>

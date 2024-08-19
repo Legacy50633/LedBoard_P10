@@ -20,15 +20,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
 
     if ($stmt->execute()) {
         // Successfully deleted the user, redirect or show a success message
-        header("Location:usersetting.php"); // Redirect to the users list page
+        echo "<script>alert('  Successfully Deleted'); window.location.href='usersetting.php';</script>";
+
+         // Redirect to the users list page
         exit;
     } else {
         // Error handling
-        echo "Error deleting record: " . $con->error;
+        echo "<script>alert(' couldn't delete'); window.location.href='usersetting.php';</script>". $con->error;
     }
 } else {
     // Redirect if no ID was provided
-    header("Location:usersetting.php.php");
+echo "<script>alert(' No id provided'); window.location.href='usersetting.php';</script>";
+
     exit;
 }
 

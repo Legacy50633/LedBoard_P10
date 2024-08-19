@@ -33,14 +33,18 @@ if (isset($_POST['submit'])) {
                     $_SESSION['user_id'] = $id;
                     $_SESSION['username'] = $username;
                     $_SESSION['usertype'] = $usertype;
+                    if($_SESSION["usertype"] == 2){
+                        header("Location: dataview.php");
+                    }
+                      echo "<script>alert(' Welcome $username'); window.location.href='add.php';</script>";
                     // Redirect to a protected page (e.g., dashboard.php)
-                    header("Location: add.php");
                     exit;
                 } else {
-                    echo "Invalid password.";
+                 echo "<script>alert(' Invalid Password'); window.location.href='index.php';</script>";
                 }
             } else {
-                echo "No user found with that username.";
+                echo "<script>alert(' No user flound'); window.location.href='index.php';</script>";
+      
             }
 
             // Close the statement

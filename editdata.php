@@ -2,11 +2,18 @@
 require('connection.php');
 session_start();
 
+// Error reporting (optional, for development)
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 // Redirect if user is not logged in
 if (!isset($_SESSION["username"])) {
-    header("Location: index.php");
+    echo "<script>alert('You must be logged in to view this page.'); window.location.href='index.php';</script>";
     exit();
 }
+
+// Initialize variables
+$row = null;
 
 // Check if form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id'])) {
@@ -21,22 +28,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id'])) {
     $message = mysqli_real_escape_string($con, $_POST["message"]);
     $effect = mysqli_real_escape_string($con, $_POST["effect"]);
     
-    // Check if the user is logged in
-    if (!isset($_SESSION["username"])) {
-        die("User is not logged in.");
-    }
-
     // Create the update query
-    $sql = "UPDATE data SET line='$line', message='$message', effect='$effect' WHERE id='$id' AND owner='" . $_SESSION["username"] . "'";
+    $sql = "UPDATE data SET line='$line', message='$message', effect='$effect' WHERE id='$id'";
 
     // Execute the update query
     if (mysqli_query($con, $sql)) {
-        // Redirect after successful update
-        header("Location: dataview.php");
+        echo "<script>alert('Updated Successfully'); window.location.href='./add.php';</script>";
         exit();
     } else {
-        // Display error message if the update fails
-        echo "Error updating record: " . mysqli_error($con);
+        echo "<script>alert('Couldn't Update: " . mysqli_error($con) . "'); window.location.href='./editdata.php?id=$id';</script>";
+        exit();
     }
 }
 
@@ -45,37 +46,23 @@ if (isset($_GET['id'])) {
     $id = mysqli_real_escape_string($con, $_GET['id']);
     $sql = "SELECT * FROM data WHERE id='$id'";
     $result = mysqli_query($con, $sql);
+
+    if (!$result) {
+        die("Query failed: " . mysqli_error($con));
+    }
+
     $row = mysqli_fetch_assoc($result);
 
     if (!$row) {
-        echo "No record found!";
+        echo "<script>alert('No record found!'); window.location.href='add.php';</script>";
         exit();
     }
 } else {
-    echo "No ID provided!";
+    echo "<script>alert('No ID provided!'); window.location.href='add.php';</script>";
     exit();
 }
-$login = ' <li class="nav-item">
-            <a class="nav-link" href="./index.php">Login</a>
-          </li>';
-$logout = ' <li class="nav-item">
-            <a class="nav-link" href="./logout.php">Logout</a>
-          </li>';
-$settings = '<li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Setting
-            </a>
-            <ul class="dropdown-menu dropdown-menu-dark">
-              <li><a class="dropdown-item" href="#">Static IP</a></li>
-              <li><a class="dropdown-item" href="./usersetting.php">User Setting</a></li>';
-$register = '<li><a class="dropdown-item" href="./newuser.php">Register User</a></li>';    
-$view = ' <li class="nav-item">
-            <a class="nav-link" href="./dataview.php">View</a>
-          </li>';
-$home = ' <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="./add.php">Add Page</a>
-          </li>';  
 
+mysqli_close($con);
 ?>
 
 <!DOCTYPE html>
@@ -86,79 +73,55 @@ $home = ' <li class="nav-item">
     <title>Edit Record</title>
     <link rel="stylesheet" href="./editdata.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
 <body>
-<nav class="navbar navbar-dark bg-dark fixed-top">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Magnito Dynamics</a>
-    <span class="navbar-text">
-        <?php
-        echo $_SESSION["username"];
-        ?>
-      </span>
-    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
-      <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Magnito Dynamics</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-      </div>
-      <div class="offcanvas-body">
-        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-         
-         <?php
-         $action = $_SESSION['usertype'];
-         switch ($action) {
-             case '0':
-                 echo $home;
-                 echo $view;
-                 echo $logout;   
-                 echo $settings;
-                 echo $register;
-                 break;
-             case '1':
-                 echo $view;
-                 echo $logout;
-                 break;
-             case '2':
-                 echo $home;
-                 echo $view;
-                 echo $logout;
-                 break;
-           }    
-         ?>
-      </div>
+    <!-- Modal Structure -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Edit Record</h5>
+                    <button type="button" class="btn-close" id="closeButton" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="./editdata.php?id=<?php echo htmlspecialchars($row['id']); ?>">
+                        <input type="hidden" name="id" value="<?php echo htmlspecialchars($row['id']); ?>">
+                        <div class="mb-3">
+                            <label for="line" class="form-label">Line:</label>
+                            <input type="text" name="line" id="line" value="<?php echo htmlspecialchars($row['line']); ?>" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Message:</label>
+                            <input type="text" name="message" id="message" value="<?php echo htmlspecialchars($row['message']); ?>" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="effect" class="form-label">Effect:</label>
+                            <select name="effect" id="effect" class="form-select" required>
+                                <option value="0" <?php if ($row['effect'] == '0') echo 'selected'; ?>>Blink</option>
+                                <option value="1" <?php if ($row['effect'] == '1') echo 'selected'; ?>>Scroll</option>
+                                <option value="2" <?php if ($row['effect'] == '2') echo 'selected'; ?>>Blink & Scroll</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</nav><br><br>
-    <div class="container mt-5">
-        <h2>Edit Record</h2>
-        <form method="post" action="./editdata.php">
-            <input type="hidden" name="id" value="<?php echo htmlspecialchars($row['id']); ?>">
-            <div class="mb-3">
-                <label for="line" class="form-label">Line:</label>
-                <input type="text" name="line" id="line" value="<?php echo htmlspecialchars($row['line']); ?>" class="form-control" required>
-            </div>
-            <div class="mb-3">
-                <label for="message" class="form-label">Message:</label>
-                <input type="text" name="message" id="message" value="<?php echo htmlspecialchars($row['message']); ?>" class="form-control" required>
-            </div>
-            <div class="mb-3">
-                <label for="effect" class="form-label">Effect:</label>
-                <select name="effect" id="effect" class="form-select" required>
-                    <option value="0" <?php if ($row['effect'] == '0') echo 'selected'; ?>>Blink</option>
-                    <option value="1" <?php if ($row['effect'] == '1') echo 'selected'; ?>>Scroll</option>
-                    <option value="2" <?php if ($row['effect'] == '2') echo 'selected'; ?>>Blink & Scroll</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Update</button>
-        </form>
-    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Display the modal when the page loads
+        window.onload = function() {
+            var myModal = new bootstrap.Modal(document.getElementById('editModal'));
+            myModal.show();
+        };
+
+        // Redirect to add.php when the Close button is clicked
+        document.getElementById('closeButton').addEventListener('click', function() {
+            window.location.href = 'add.php';
+        });
+    </script>
 </body>
 </html>
-
-<?php
-mysqli_close($con);
-?>

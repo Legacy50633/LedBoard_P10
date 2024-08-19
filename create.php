@@ -17,12 +17,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Execute the query and check for success
     if (mysqli_query($con, $sql)) {
-        echo "New record created successfully";
-        // Redirect to another page if needed
-        header("Location: add.php"); // Adjust the location as needed
-        exit();
+        // Output JavaScript alert for success
+        echo "<script>alert('New record created successfully'); window.location.href='add.php';</script>";
     } else {
-        echo "Error: " . $sql . "<br>" . mysqli_error($con);
+        // Output JavaScript alert for error
+        echo "<script>alert('Error: " . mysqli_error($con) . "'); window.location.href='add.php';</script>";
     }
 }
 
