@@ -38,7 +38,7 @@ $settings = '
 ';
 $register = '<li><a class="dropdown-item" href="./newuser.php">Register User</a></li>';
 $view = '<li class="nav-item"><a class="nav-link" href="./dataview.php">View</a></li>';
-$home = '<li class="nav-item"><a class="nav-link active" aria-current="page" href="./add.php">Home</a></li>';
+$home = '<li class="nav-item"><a class="nav-link active" aria-current="page" href="./home.php">Home</a></li>';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -54,7 +54,7 @@ $home = '<li class="nav-item"><a class="nav-link active" aria-current="page" hre
     <link rel="stylesheet" href="https://cdn.datatables.net/2.1.3/css/dataTables.dataTables.min.css">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="./add.css">
+    <link rel="stylesheet" href="../css/add.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <style>
         body {
@@ -191,7 +191,7 @@ $home = '<li class="nav-item"><a class="nav-link active" aria-current="page" hre
       </fieldset>
     </div>
 
-     <script src="./register.js"></script>
+     <script src="../js/register.js"></script>
      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>

@@ -21,7 +21,7 @@ $view = '<li class="nav-item">
             <a class="nav-link" href="./dataview.php">View</a>
           </li>';
 $home = '<li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="./add.php">Add Page</a>
+            <a class="nav-link active" aria-current="page" href="./home.php">Add Page</a>
           </li>';         
 ?>
 
@@ -120,7 +120,7 @@ $home = '<li class="nav-item">
         </fieldset>
     </div>
 
-    <script src="./log.js"></script>
+    <script src="../js/log.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

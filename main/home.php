@@ -45,7 +45,7 @@ $settings = '
 ';
 $register = '<li><a class="dropdown-item" href="./newuser.php">Register User</a></li>';
 $view = '<li class="nav-item"><a class="nav-link" href="./dataview.php">View</a></li>';
-$home = '<li class="nav-item"><a class="nav-link active" aria-current="page" href="./add.php">Home</a></li>';
+$home = '<li class="nav-item"><a class="nav-link active" aria-current="page" href="./home.php">Home</a></li>';
 
 ?>
 <!DOCTYPE html>
@@ -63,7 +63,7 @@ $home = '<li class="nav-item"><a class="nav-link active" aria-current="page" hre
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="./add.css">    
+    <link rel="stylesheet" href="../css/add.css">    
     <style>
         body {
             background-color: #f8f9fa;
@@ -218,11 +218,11 @@ $home = '<li class="nav-item"><a class="nav-link active" aria-current="page" hre
             <table id="dataTable" class="table table-striped" style="width:100%">
                 <thead>
                     <tr>
-                        <th>Id</th>
+                        
                         <th>Line</th>
                         <th>Message</th>
-                        <th>Type</th>
-                        <th>Created By</th>
+                        <th>Blink</th>
+                        <th>Scroll</th>
                         <th>Edit</th>
                         <!-- <th>Remove</th> -->
                     </tr>
@@ -237,34 +237,45 @@ $home = '<li class="nav-item"><a class="nav-link active" aria-current="page" hre
                             $effect = $row["effect"];
                             $owner = $row["owner"];
 
-                            // Convert the effect integer to a string
-                            switch ($effect) {
-                                case 0:
-                                    $effect = "Blink";
-                                    break;
-                                case 1:
-                                    $effect = "Scroll";
-                                    break;
-                                case 2:
-                                    $effect = "Blink & Scroll";
-                                    break;
-                                default:
-                                    $effect = "Unknown";
-                            }
-
+                            // // Convert the effect integer to a string
+                            // switch ($effect) {
+                            //     case 0:
+                            //         $effect = "Blink";
+                            //         break;
+                            //     case 1:
+                            //         $effect = "Scroll";
+                            //         break;
+                            //     case 2:
+                            //         $effect = "Blink & Scroll";
+                            //         break;
+                            //     default:
+                            //         $effect = "Unknown";
+                            // }
+                          
                             // Fetch owner name
-                            $owner_sql = "SELECT username FROM users WHERE id='$owner'";
-                            $owner_result = mysqli_query($con, $owner_sql);
-                            $owner_row = mysqli_fetch_assoc($owner_result);
-                            $owner_name = $owner_row ? $owner_row["username"] : "Unknown";
+                            // $owner_sql = "SELECT username FROM users WHERE id='$owner'";
+                            // $owner_result = mysqli_query($con, $owner_sql);
+                            // $owner_row = mysqli_fetch_assoc($owner_result);
+                            // $owner_name = $owner_row ? $owner_row["username"] : "Unknown";
 
                             // Output data
                             echo "<tr>";
-                            echo "<td>" . $id . "</td>";
+                            
                             echo "<td>" . $line . "</td>";
                             echo "<td>" . $message . "</td>";
-                            echo "<td>" . $effect . "</td>";
-                            echo "<td>" . $owner_name . "</td>";
+                            if($effect == 0){
+                                echo "<td><input type='radio' value='0' checked></td>";
+                                echo "<td><input type='radio'  value='1' ></td>";
+                            }
+                            else if ($effect == 1){
+                                echo "<td><input type='radio' value='0' ></td>";
+                                echo "<td><input type='radio'  value='1'checked ></td>";
+                            }else{
+                                echo "<td><input type='radio' value='0' checked></td>";
+                                echo "<td><input type='radio'  value='1' checked></td>";
+                            }
+                           
+                            // echo "<td>" . $owner_name . "</td>";
                             if ($_SESSION["usertype"] == 1 || $_SESSION["usertype"] == 0) {
                                 echo "<td><a  href='./editdata.php?id=" . $id . "' class='btn btn-primary'   data-bs-target='#editModal' >Edit</a></td>";
                                 // echo "<td><a href='./removedata.php?id=" . $id . "' class='btn btn-danger' onclick='return confirm(\"Are you sure you want to delete this record?\");'>Remove</a></td>";
@@ -284,7 +295,7 @@ $home = '<li class="nav-item"><a class="nav-link active" aria-current="page" hre
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/2.1.3/js/dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="./add.js"></script>
+    <script src="../js/add.js"></script>
     <script>
         $(document).ready(function() {
             $('#dataTable').DataTable({

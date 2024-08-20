@@ -30,13 +30,14 @@ if (isset($_POST['submit'])) {
                 // Verify the password
                 if ($password === $db_password) { // For simplicity, assuming password is not hashed
                     // Set session variables
-                    $_SESSION['user_id'] = $id;
+
+          $_SESSION['user_id'] = $id;
                     $_SESSION['username'] = $username;
                     $_SESSION['usertype'] = $usertype;
                     if($_SESSION["usertype"] == 2){
                         header("Location: dataview.php");
                     }
-                      echo "<script>alert(' Welcome $username'); window.location.href='add.php';</script>";
+                      echo "<script>alert(' Welcome $username'); window.location.href='./home.php';</script>";
                     // Redirect to a protected page (e.g., dashboard.php)
                     exit;
                 } else {

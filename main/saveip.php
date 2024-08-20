@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Successful update
                 echo "<script>
                         alert('IP updated successfully');
-                        window.location.href = 'add.php';
+                        window.location.href = './home.php';
                       </script>";
             } else {
                 // Error during execution

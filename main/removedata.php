@@ -23,19 +23,19 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
             $sql = "DELETE FROM data WHERE id='$id'";
             if (mysqli_query($con, $sql)) {
                 // Redirect after successful delete
-                 echo "<script>alert(' Data removed Successfully'); window.location.href='add.php';</script>";
+                 echo "<script>alert(' Data removed Successfully'); window.location.href='./home.php';</script>";
 
                 exit();
             } else {
                 // Display error message if the delete fails
-              echo "<script>alert(' Couldn't Remove data'); window.location.href='add.php';</script>". mysqli_error($con);
+              echo "<script>alert(' Couldn't Remove data'); window.location.href='./home.php';</script>". mysqli_error($con);
             }
     } else {
         // ID parameter is missing or empty
-   echo "<script>alert(' Id not provided'); window.location.href='add.php';</script>";
+   echo "<script>alert(' Id not provided'); window.location.href='./home.php';</script>";
     }
 } else {
-     echo "<script>alert(' Requested method is wrong'); window.location.href='add.php';</script>";
+     echo "<script>alert(' Requested method is wrong'); window.location.href='./home.php';</script>";
 }
 
 // Close the database connection

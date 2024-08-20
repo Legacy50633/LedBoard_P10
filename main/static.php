@@ -11,7 +11,7 @@ $id = $_SESSION['id'] ?? null;  // Replace with the actual logic to get the ID.
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Save Static IP</title>
-    <link rel="stylesheet" href="./static.css">
+    <link rel="stylesheet" href="../css/static.css">
 </head>
 <body>
     <form action="./saveip.php" method="post">
@@ -20,6 +20,6 @@ $id = $_SESSION['id'] ?? null;  // Replace with the actual logic to get the ID.
         <input type="hidden" name="id" value="<?php echo htmlspecialchars($id); ?>">
         <input type="submit" value="Save IP Address">
     </form>
-    <script src="./static.js"></script>
+    <script src="../js/static.js"></script>
 </body>
 </html>

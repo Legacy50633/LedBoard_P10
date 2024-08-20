@@ -30,7 +30,7 @@ $view = '<li class="nav-item">
             <a class="nav-link" href="./dataview.php">View</a>
           </li>';
 $home = '<li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="./add.php">Add page</a>
+            <a class="nav-link active" aria-current="page" href="./home.php">Add page</a>
           </li>';          
 ?>
 

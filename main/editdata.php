@@ -27,13 +27,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id'])) {
     $line = mysqli_real_escape_string($con, $_POST["line"]);
     $message = mysqli_real_escape_string($con, $_POST["message"]);
     $effect = mysqli_real_escape_string($con, $_POST["effect"]);
+        // Process checkbox selections
+        if (isset($_POST['effect'])) {
+            $effects = $_POST['effect'];
+            // Determine the effect value
+            if (in_array('0', $effects) && in_array('1', $effects)) {
+                $effect = '2'; // Both Blink and Scroll
+            } elseif (in_array('0', $effects)) {
+                $effect = '0'; // Only Blink
+            } elseif (in_array('1', $effects)) {
+                $effect = '1'; // Only Scroll
+            } else {
+                $effect = ''; // No effect selected
+            }
+        } else {
+            $effect = ''; // No effect selected
+        }
     
+        $effect = mysqli_real_escape_string($con, $effect);
     // Create the update query
     $sql = "UPDATE data SET line='$line', message='$message', effect='$effect' WHERE id='$id'";
 
     // Execute the update query
     if (mysqli_query($con, $sql)) {
-        echo "<script>alert('Updated Successfully'); window.location.href='./add.php';</script>";
+        echo "<script>alert('Updated Successfully'); window.location.href='./home.php';</script>";
         exit();
     } else {
         echo "<script>alert('Couldn't Update: " . mysqli_error($con) . "'); window.location.href='./editdata.php?id=$id';</script>";
@@ -54,11 +71,11 @@ if (isset($_GET['id'])) {
     $row = mysqli_fetch_assoc($result);
 
     if (!$row) {
-        echo "<script>alert('No record found!'); window.location.href='add.php';</script>";
+        echo "<script>alert('No record found!'); window.location.href='./home.php';</script>";
         exit();
     }
 } else {
-    echo "<script>alert('No ID provided!'); window.location.href='add.php';</script>";
+    echo "<script>alert('No ID provided!'); window.location.href='./home.php';</script>";
     exit();
 }
 
@@ -71,7 +88,7 @@ mysqli_close($con);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Record</title>
-    <link rel="stylesheet" href="./editdata.css">
+    <link rel="stylesheet" href="../css/editdata.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
@@ -96,13 +113,18 @@ mysqli_close($con);
                             <input type="text" name="message" id="message" value="<?php echo htmlspecialchars($row['message']); ?>" class="form-control" required>
                         </div>
                         <div class="mb-3">
-                            <label for="effect" class="form-label">Effect:</label>
-                            <select name="effect" id="effect" class="form-select" required>
-                                <option value="0" <?php if ($row['effect'] == '0') echo 'selected'; ?>>Blink</option>
-                                <option value="1" <?php if ($row['effect'] == '1') echo 'selected'; ?>>Scroll</option>
-                                <option value="2" <?php if ($row['effect'] == '2') echo 'selected'; ?>>Blink & Scroll</option>
-                            </select>
-                        </div>
+    <label for="effect" class="form-label">Effect:</label><br>
+    <div class="form-check">
+        <input type="checkbox" name="effect[]" id="effectBlink" value="0" class="form-check-input" <?php if (strpos($row['effect'], '0') !== false) echo 'checked'; ?>>
+        <label for="effectBlink" class="form-check-label">Blink</label>
+    </div>
+    <div class="form-check">
+        <input type="checkbox" name="effect[]" id="effectScroll" value="1" class="form-check-input" <?php if (strpos($row['effect'], '1') !== false) echo 'checked'; ?>>
+        <label for="effectScroll" class="form-check-label">Scroll</label>
+    </div>
+    
+</div>
+
                         <button type="submit" class="btn btn-primary">Update</button>
                     </form>
                 </div>
@@ -120,7 +142,7 @@ mysqli_close($con);
 
         // Redirect to add.php when the Close button is clicked
         document.getElementById('closeButton').addEventListener('click', function() {
-            window.location.href = 'add.php';
+            window.location.href = 'home.php';
         });
     </script>
 </body>

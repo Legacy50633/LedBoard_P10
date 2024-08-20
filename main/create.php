@@ -18,10 +18,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Execute the query and check for success
     if (mysqli_query($con, $sql)) {
         // Output JavaScript alert for success
-        echo "<script>alert('New record created successfully'); window.location.href='add.php';</script>";
+        echo "<script>alert('New record created successfully'); window.location.href='home.php';</script>";
     } else {
         // Output JavaScript alert for error
-        echo "<script>alert('Error: " . mysqli_error($con) . "'); window.location.href='add.php';</script>";
+        echo "<script>alert('Error: " . mysqli_error($con) . "'); window.location.href='home.php';</script>";
     }
 }
 
